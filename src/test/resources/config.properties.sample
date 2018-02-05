@@ -1,0 +1,7 @@
+login.create.email=
+login.create.password=
+login.create.token_name=
+
+login.execute.token_name=
+login.execute.login_token=
+login.execute.login_secret_token=
