@@ -9,30 +9,63 @@ import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder
 import com.amazonaws.services.securitytoken.model.AssumeRoleWithWebIdentityRequest;
 import com.amazonaws.services.securitytoken.model.AssumeRoleWithWebIdentityResult;
 import net.chikyu.chikyu_sdk_java.OpenResource;
+import net.chikyu.chikyu_sdk_java.SecureResource;
 import net.chikyu.chikyu_sdk_java.config.Config;
 import net.chikyu.chikyu_sdk_java.exception.ApiCallException;
 import net.chikyu.chikyu_sdk_java.model.ApiDataResponse;
 import net.chikyu.chikyu_sdk_java.model.ApiRequest;
+import net.chikyu.chikyu_sdk_java.model.ApiResponse;
+import net.chikyu.chikyu_sdk_java.model.generic.GenericApiRequest;
+import net.chikyu.chikyu_sdk_java.model.session.ChangeOrganRequestModel;
+import net.chikyu.chikyu_sdk_java.model.session.ChangeOrganResponseModel;
 import net.chikyu.chikyu_sdk_java.model.session.LoginResponseModel;
 import net.chikyu.chikyu_sdk_java.model.session.token.SendTokenRequestModel;
 
 import java.io.IOException;
 
 public class Session {
+    private SessionData sessionData;
 
-    public SessionData login(SendTokenRequestModel model) throws IOException, ApiCallException {
+    private Session(SessionData sessionData) {
+        this.sessionData = sessionData;
+    }
+
+    public static Session login(SendTokenRequestModel model) throws IOException, ApiCallException {
         OpenResource resource = new OpenResource();
         ApiRequest<SendTokenRequestModel> req = new ApiRequest<SendTokenRequestModel>().withData(model);
 
         LoginResponse res = resource.invoke("/session/login", req, LoginResponse.class);
-        BasicSessionCredentials credentials = this.createCredentials(res.data);
+        BasicSessionCredentials credentials = createCredentials(res.data);
 
-        SessionData data = new SessionData(credentials, res.data.sessionId, res.data.apiKey);
+        SessionData sessionData = new SessionData(credentials, res.data.sessionId, res.data.apiKey);
 
-        return data;
+        return new Session(sessionData);
     }
 
-    private BasicSessionCredentials createCredentials(LoginResponseModel model) {
+    public Session changeOrgan(int organId) throws IOException, ApiCallException {
+        ChangeOrganRequestModel data = new ChangeOrganRequestModel();
+        data.targetOrganId = organId;
+        ApiRequest<ChangeOrganRequestModel> req = new ApiRequest<ChangeOrganRequestModel>().withData(data);
+
+        ChangeOrganResponse res =
+            new SecureResource(this).invoke("/session/organ/change", req, ChangeOrganResponse.class);
+
+        this.sessionData = new SessionData(sessionData.getCredentials(), sessionData.getSessionId(), res.data.apiKey);
+
+        return this;
+    }
+
+    public boolean logout() throws IOException, ApiCallException {
+        ApiResponse res = new SecureResource(this).invoke(
+                "/session/logout", new GenericApiRequest(), ApiResponse.class);
+        return !res.hasError;
+    }
+
+    public SessionData data() {
+        return sessionData;
+    }
+
+    private static BasicSessionCredentials createCredentials(LoginResponseModel model) {
         class DummyProvider implements AWSCredentialsProvider {
             @Override
             public AWSCredentials getCredentials() {
@@ -60,33 +93,13 @@ public class Session {
         return new BasicSessionCredentials(stsResult.getCredentials().getAccessKeyId(),
                 stsResult.getCredentials().getSecretAccessKey(), stsResult.getCredentials().getSessionToken());
     }
-
-    public class SessionData {
-        private BasicSessionCredentials credentials;
-        private String sessionId;
-        private String apiKey;
-
-        private SessionData(BasicSessionCredentials credentials, String sessionId, String apiKey) {
-            this.credentials = credentials;
-            this.sessionId = sessionId;
-            this.apiKey = apiKey;
-        }
-
-        public BasicSessionCredentials getCredentials() {
-            return credentials;
-        }
-
-        public String getSessionId() {
-            return sessionId;
-        }
-
-        public String getApiKey() {
-            return apiKey;
-        }
-    }
 }
 
 
 class LoginResponse extends ApiDataResponse<LoginResponseModel> {
+
+}
+
+class ChangeOrganResponse extends ApiDataResponse<ChangeOrganResponseModel> {
 
 }

@@ -11,6 +11,10 @@ public class RequestHelper {
         return "https://" + Config.getHost() + "/" + Config.getEnvName() + "/" + Config.getPathPrefix();
     }
 
+    public static String buildApiPathWithEnvName(String apiClass, String path) {
+        return "/" + Config.getEnvName() + "/" + Config.getPathPrefix() + buildApiPath(apiClass, path);
+    }
+
     public static String buildApiPath(String apiClass, String path) {
         StringBuilder res = new StringBuilder();
         if (apiClass == null || apiClass.equals("/")) {

@@ -12,27 +12,21 @@ import net.chikyu.chikyu_sdk_java.model.session.token.TokenResponseModel;
 import java.io.IOException;
 
 public class Token {
-    private OpenResource resource;
-
-    public Token() {
-        this.resource = new OpenResource();
-    }
-
-    public TokenResponseModel create(TokenRequestModel model) throws IOException, ApiCallException {
+    public static TokenResponseModel create(TokenRequestModel model) throws IOException, ApiCallException {
         ApiRequest<TokenRequestModel> req = new ApiRequest<TokenRequestModel>().withData(model);
-        TokenResponse res = this.resource.invoke("session/token/create", req, TokenResponse.class);
+        TokenResponse res = (new OpenResource()).invoke("session/token/create", req, TokenResponse.class);
         return res.data;
     }
 
-    public TokenResponseModel renew(SendTokenRequestModel model) throws IOException, ApiCallException {
+    public static TokenResponseModel renew(SendTokenRequestModel model) throws IOException, ApiCallException {
         ApiRequest<SendTokenRequestModel> req = new ApiRequest<SendTokenRequestModel>().withData(model);
-        TokenResponse res = this.resource.invoke("session/token/renew", req, TokenResponse.class);
+        TokenResponse res = (new OpenResource()).invoke("session/token/renew", req, TokenResponse.class);
         return res.data;
     }
 
-    public boolean revoke(SendTokenRequestModel model) throws IOException, ApiCallException {
+    public static boolean revoke(SendTokenRequestModel model) throws IOException, ApiCallException {
         ApiRequest<SendTokenRequestModel> req = new ApiRequest<SendTokenRequestModel>().withData(model);
-        ApiResponse res = this.resource.invoke("session/token/renew", req, ApiResponse.class);
+        ApiResponse res = (new OpenResource()).invoke("session/token/renew", req, ApiResponse.class);
         return !res.hasError;
     }
 }
