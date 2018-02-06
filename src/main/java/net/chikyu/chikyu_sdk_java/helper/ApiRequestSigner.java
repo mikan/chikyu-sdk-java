@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /*
@@ -57,15 +56,14 @@ public class ApiRequestSigner {
 
         Map<String, String> headers = new LinkedHashMap<>();
         headers.put("content-type", "application/json");
-        headers.put("host", "cxpybqnsd0.execute-api.ap-northeast-1.amazonaws.com");
+        headers.put("host", Config.getHost());
         headers.put("x-amz-date", timeStamp);
         headers.put("x-amz-security-token", this.credentials.getSessionToken());
         headers.put("x-api-key", this.apiKey);
 
         String signedHeader = this.getSignedHeader(headers);
         String canonicalUrl = this.getCanonicalUrl(path, payload, signedHeader, headers);
-        String stringToSign = getStringToSign(canonicalUrl, timeStamp, currentDate);
-        String signature = calculateSignature(stringToSign, currentDate);
+        String signature = this.getSignature(canonicalUrl, timeStamp, currentDate);
 
         headers.put("Authorization", buildAuthorizationString(signedHeader, signature, currentDate));
 
@@ -75,7 +73,6 @@ public class ApiRequestSigner {
 
         for (Map.Entry<String, String> item : headers.entrySet()) {
             post.addHeader(item.getKey(), item.getValue());
-            logger.log(Level.FINE, item.getKey() + ": " + item.getValue());
         }
 
         try {
@@ -118,26 +115,32 @@ public class ApiRequestSigner {
         canonicalURL.append(signedHeaders).append("\n");
 
         payload = payload == null ? "" : payload;
-        canonicalURL.append(generateHex(payload));
+        canonicalURL.append(sha256Digest(payload));
 
         return canonicalURL.toString();
+    }
+
+    private String buildAuthorizationString(String signedHeader, String signature, String currentDate) {
+        return AWS4_HMAC_SHA256 + " "
+                + "Credential=" + this.credentials.getAWSAccessKeyId() + "/" + getServiceDescription(currentDate) + ","
+                + "SignedHeaders=" + signedHeader + ","
+                + "Signature=" + signature;
     }
 
     private String getServiceDescription(String currentDate) {
         return currentDate + "/" + this.regionName + "/" + this.serviceName + "/" + AWS4_REQUEST;
     }
 
-    private String getStringToSign(String canonicalURL, String timeStamp, String currentDate) {
-        return AWS4_HMAC_SHA256 + "\n" +
-                timeStamp + "\n" +
-                getServiceDescription(currentDate) + "\n" +
-                generateHex(canonicalURL);
-    }
-
-    private String calculateSignature(String stringToSign, String currentDate) {
+    private String getSignature(String canonicalURL, String timeStamp,  String currentDate) {
         try {
-            byte[] signatureKey = getSignatureKey(this.credentials.getAWSSecretKey(),
-                    currentDate, this.regionName, this.serviceName);
+            String stringToSign = AWS4_HMAC_SHA256 + "\n" +
+                                  timeStamp + "\n" +
+                                  getServiceDescription(currentDate) + "\n" +
+                                  sha256Digest(canonicalURL);
+
+            byte[] signatureKey = getSignatureKey(
+                    this.credentials.getAWSSecretKey(), currentDate, this.regionName, this.serviceName);
+
             byte[] signature = HmacSHA256(signatureKey, stringToSign);
             return bytesToHex(signature);
         } catch (Exception ex) {
@@ -158,20 +161,13 @@ public class ApiRequestSigner {
         return dateFormat.format(new Date());
     }
 
-    private String buildAuthorizationString(String signedHeader, String signature, String currentDate) {
-        return AWS4_HMAC_SHA256 + " "
-                + "Credential=" + this.credentials.getAWSAccessKeyId() + "/" + getServiceDescription(currentDate) + ","
-                + "SignedHeaders=" + signedHeader + ","
-                + "Signature=" + signature;
-    }
-
-    private String generateHex(String data) {
+    private String sha256Digest(String data) {
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance("SHA-256");
             messageDigest.update(data.getBytes("UTF-8"));
             byte[] digest = messageDigest.digest();
-            return String.format("%064x", new java.math.BigInteger(1, digest));
+            return bytesToHex(digest); //String.format("%064x", new java.math.BigInteger(1, digest));
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -194,7 +190,6 @@ public class ApiRequestSigner {
     }
 
     private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
-
     private String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
