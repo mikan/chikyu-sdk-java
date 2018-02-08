@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 public class RequestHelper {
 
     public static String getBaseUrl() {
-        return "https://" + Config.getHost() + "/" + Config.getEnvName() + "/" + Config.getPathPrefix();
+        return Config.getProtocol() + "://" + Config.getHost() + "/" + Config.getEnvName() + "/" + Config.getPathPrefix();
     }
 
     public static String buildApiPathWithEnvName(String apiClass, String path) {

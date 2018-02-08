@@ -76,7 +76,7 @@ public class ApiRequestSigner {
         }
 
         try {
-            String s2 = "https://" + Config.getHost() + path;
+            String s2 = Config.getProtocol() + "://" + Config.getHost() + path;
             post.setURI(new URI(s2));
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);

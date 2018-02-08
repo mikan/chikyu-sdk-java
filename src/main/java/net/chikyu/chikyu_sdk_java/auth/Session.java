@@ -37,7 +37,7 @@ public class Session {
         LoginResponse res = resource.invoke("/session/login", req, LoginResponse.class);
         BasicSessionCredentials credentials = createCredentials(res.data);
 
-        SessionData sessionData = new SessionData(credentials, res.data.sessionId, res.data.apiKey);
+        SessionData sessionData = new SessionData(credentials, res.data.sessionId, res.data.identityId, res.data.apiKey);
 
         return new Session(sessionData);
     }
@@ -50,7 +50,8 @@ public class Session {
         ChangeOrganResponse res =
             new SecureResource(this).invoke("/session/organ/change", req, ChangeOrganResponse.class);
 
-        this.sessionData = new SessionData(sessionData.getCredentials(), sessionData.getSessionId(), res.data.apiKey);
+        this.sessionData = new SessionData(
+                sessionData.getCredentials(), sessionData.getSessionId(), sessionData.getIdentityId(), res.data.apiKey);
 
         return this;
     }

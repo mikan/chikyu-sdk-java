@@ -4,8 +4,6 @@ public class Config {
     private static final String AWS_REGION_NAME = "ap-northeast-1";
     private static final String AWS_SERVICE_NAME = "execute-api";
     private static final String AWS_IAM_ROLE_ID = "arn:aws:iam::171608821407:role/Cognito_Chikyu_Normal_Id_PoolAuth_Role";
-    private static final String HOST = "cxpybqnsd0.execute-api.ap-northeast-1.amazonaws.com";
-    private static final String ENV_NAME = "devdc";
     private static final String PATH_PREFIX = "api/v2";
 
     public static String getAwsRegionName() {
@@ -21,14 +19,37 @@ public class Config {
     }
 
     public static String getHost() {
-        return HOST;
+        if (getMode().equals("local")) {
+            return "localhost:9090";
+        } else if (getMode().equals("dev")) {
+            return "gateway.chikyu.mobi";
+        }
+        return null;
     }
 
     public static String getEnvName() {
-        return ENV_NAME;
+        if (getMode().equals("local")) {
+            return "local";
+        } else if (getMode().equals("dev")) {
+            return "dev";
+        }
+        return null;
+    }
+
+    public static String getProtocol() {
+        if (getMode().equals("local")) {
+            return "http";
+        } else if (getMode().equals("dev")) {
+            return "https";
+        }
+        return null;
     }
 
     public static String getPathPrefix() {
         return PATH_PREFIX;
+    }
+
+    public static String getMode() {
+        return "local";
     }
 }

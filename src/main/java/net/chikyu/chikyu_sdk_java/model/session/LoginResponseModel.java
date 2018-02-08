@@ -13,6 +13,9 @@ public class LoginResponseModel extends ApiDataModel {
     @JsonProperty(value = "api_key")
     public String apiKey;
 
+    @JsonProperty(value = "cognito_identity_id")
+    public String identityId;
+
     @JsonProperty(value = "user")
     public UserModel user;
 }

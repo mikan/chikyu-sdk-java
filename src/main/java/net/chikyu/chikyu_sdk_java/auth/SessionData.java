@@ -6,10 +6,12 @@ public class SessionData {
     private BasicSessionCredentials credentials;
     private String sessionId;
     private String apiKey;
+    private String identityId;
 
-    protected SessionData(BasicSessionCredentials credentials, String sessionId, String apiKey) {
+    protected SessionData(BasicSessionCredentials credentials, String sessionId, String identityId, String apiKey) {
         this.credentials = credentials;
         this.sessionId = sessionId;
+        this.identityId = identityId;
         this.apiKey = apiKey;
     }
 
@@ -23,5 +25,9 @@ public class SessionData {
 
     public String getApiKey() {
         return apiKey;
+    }
+
+    public String getIdentityId() {
+        return identityId;
     }
 }

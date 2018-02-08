@@ -7,37 +7,23 @@ import net.chikyu.chikyu_sdk_java.model.generic.GenericApiResponse;
 import net.chikyu.chikyu_sdk_java.model.session.token.SendTokenRequestModel;
 import net.chikyu.chikyu_sdk_java.model.session.token.TokenRequestModel;
 import net.chikyu.chikyu_sdk_java.model.session.token.TokenResponseModel;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
-public class ApiCallTest {
-
-    private Properties properties;
-
-    @Before
-    public void prepare() throws IOException {
-        String path = new File(".").getAbsoluteFile().getParent() + "/src/test/resources/config.properties";
-        properties = new Properties();
-        properties.load(new FileReader(path));
-    }
+public class ApiCallTest extends AbsApiTest {
 
     @Test
     public void アクセストークンの作成と削除() throws Exception{
         TokenRequestModel req = new TokenRequestModel();
-        req.email = properties.getProperty("login.create.email");
-        req.password = properties.getProperty("login.create.password");
-        req.tokenName = properties.getProperty("login.create.token_name");
+        req.email = params.getProperty("login.create.email");
+        req.password = params.getProperty("login.create.password");
+        req.tokenName = params.getProperty("login.create.token_name");
 
         TokenResponseModel m = Token.create(req);
         assertThat(m.loginToken, is(notNullValue()));
@@ -63,15 +49,16 @@ public class ApiCallTest {
 
     @Test
     public void ログインとログアウト() throws Exception{
-        String tokenName = properties.getProperty("login.execute.token_name");
-        String loginToken = properties.getProperty("login.execute.login_token");
-        String loginSecretToken = properties.getProperty("login.execute.login_secret_token");
+        String tokenName = params.getProperty("login.execute.token_name");
+        String loginToken = params.getProperty("login.execute.login_token");
+        String loginSecretToken = params.getProperty("login.execute.login_secret_token");
 
         Session session = Session.login(new SendTokenRequestModel()
                 .withTokenName(tokenName)
                 .withLoginToken(loginToken)
                 .withLoginSecretToken(loginSecretToken));
 
+        session.changeOrgan(1460);
         SecureResource resource = new SecureResource(session);
 
         GenericApiRequest req = new GenericApiRequest();
@@ -84,6 +71,10 @@ public class ApiCallTest {
 
         List<Map<String, Object>> items = (List<Map<String, Object>>)res.data.get("list");
 
+        for (Map<String, Object> item : items) {
+            System.out.println(item.get("__display_name"));
+        }
+
         assertThat(items.size(), is(equalTo(10)));
 
         session.logout();
@@ -91,8 +82,8 @@ public class ApiCallTest {
 
     @Test
     public void APIキーを経由してデータ作成() throws Exception{
-        String apiKey = properties.getProperty("api_key.api_key");
-        String authKey = properties.getProperty("api_key.auth_key");
+        String apiKey = params.getProperty("api_key.api_key");
+        String authKey = params.getProperty("api_key.auth_key");
 
         PublicResource resource = new PublicResource(apiKey, authKey);
         Map<String, Object> item = new HashMap<>();
