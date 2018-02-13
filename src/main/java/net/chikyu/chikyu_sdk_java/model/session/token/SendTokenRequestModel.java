@@ -15,6 +15,9 @@ public class SendTokenRequestModel extends ApiDataModel {
     @JsonProperty(value="login_secret_token")
     public String loginSecretToken;
 
+    @JsonProperty(value="duration")
+    public Integer duration;
+
     @Transient
     public SendTokenRequestModel withTokenName(String tokenName) {
         this.tokenName = tokenName;
