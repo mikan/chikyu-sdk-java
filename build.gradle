@@ -1,4 +1,4 @@
-group 'net.chikyu'
+group 'net.chikyu.sdk'
 version '0.0.1-SNAPSHOT'
 
 apply plugin: 'java'
@@ -6,14 +6,14 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.hidetake:gradle-ssh-plugin:1.1.5'
-    }
-}
+//buildscript {
+//    repositories {
+//        mavenCentral()
+//    }
+//    dependencies {
+//        classpath 'org.hidetake:gradle-ssh-plugin:1.1.5'
+//    }
+//}
 
 repositories {
     mavenCentral()
@@ -33,23 +33,30 @@ uploadArchives {
     }
 }
 
-apply plugin: 'org.hidetake.ssh'
-
-remotes {
-    repo {
-        host = 'dev-ci.chikyu.mobi'
-        user = 'deployer'
-        identity = file("${System.getProperty("user.home")}/.ssh/chikyu.jenkins.deploy.key")
-        knownHosts = allowAnyHosts
+task publishArchives << {
+    exec {
+        executable "aws"
+        args "s3", "sync", "${buildDir}/repository", "s3://chikyu-cors/maven", "--acl", "public-read", "--profile=chikyu"
     }
 }
 
-task deployToRemote {
-    doLast {
-        ssh.run {
-            session(remotes.repo) {
-                put from: "${buildDir}/repository", into: '/var/maven'
-            }
-        }
-    }
-}
+//apply plugin: 'org.hidetake.ssh'
+//
+//remotes {
+//    repo {
+//        host = 'dev-ci.chikyu.mobi'
+//        user = 'deployer'
+//        identity = file("${System.getProperty("user.home")}/.ssh/chikyu.jenkins.deploy.key")
+//        knownHosts = allowAnyHosts
+//    }
+//}
+//
+//task deployToRemote {
+//    doLast {
+//        ssh.run {
+//            session(remotes.repo) {
+//                put from: "${buildDir}/repository", into: '/var/maven'
+//            }
+//        }
+//    }
+//}
