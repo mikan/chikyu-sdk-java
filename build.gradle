@@ -33,11 +33,9 @@ uploadArchives {
     }
 }
 
-task publishArchives << {
-    exec {
-        executable "aws"
-        args "s3", "sync", "${buildDir}/repository", "s3://chikyu-cors/maven", "--acl", "public-read", "--profile=chikyu"
-    }
+task deploy(type: Exec, dependsOn: uploadArchives) {
+    executable "aws"
+    args "s3", "sync", "${buildDir}/repository", "s3://chikyu-cors/maven", "--acl", "public-read", "--profile=chikyu"
 }
 
 //apply plugin: 'org.hidetake.ssh'
