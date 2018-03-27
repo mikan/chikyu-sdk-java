@@ -1,6 +1,6 @@
 package net.chikyu.chikyu.sdk.helper;
 
-import net.chikyu.chikyu.sdk.config.Config;
+import net.chikyu.chikyu.sdk.config.ApiConfig;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -8,11 +8,11 @@ import java.net.URISyntaxException;
 public class RequestHelper {
 
     public static String getBaseUrl() {
-        return Config.getProtocol() + "://" + Config.getHost() + "/" + Config.getEnvName() + "/" + Config.getPathPrefix();
+        return ApiConfig.getProtocol() + "://" + ApiConfig.getHost() + "/" + ApiConfig.getEnvName() + "/" + ApiConfig.getPathPrefix();
     }
 
     public static String buildApiPathWithEnvName(String apiClass, String path) {
-        return "/" + Config.getEnvName() + "/" + Config.getPathPrefix() + buildApiPath(apiClass, path);
+        return "/" + ApiConfig.getEnvName() + "/" + ApiConfig.getPathPrefix() + buildApiPath(apiClass, path);
     }
 
     public static String buildApiPath(String apiClass, String path) {

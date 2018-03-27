@@ -6,15 +6,6 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 
-//buildscript {
-//    repositories {
-//        mavenCentral()
-//    }
-//    dependencies {
-//        classpath 'org.hidetake:gradle-ssh-plugin:1.1.5'
-//    }
-//}
-
 repositories {
     mavenCentral()
 }
@@ -37,24 +28,3 @@ task deploy(type: Exec, dependsOn: uploadArchives) {
     executable "aws"
     args "s3", "sync", "${buildDir}/repository", "s3://chikyu-cors/maven", "--acl", "public-read", "--profile=chikyu"
 }
-
-//apply plugin: 'org.hidetake.ssh'
-//
-//remotes {
-//    repo {
-//        host = 'dev-ci.chikyu.mobi'
-//        user = 'deployer'
-//        identity = file("${System.getProperty("user.home")}/.ssh/chikyu.jenkins.deploy.key")
-//        knownHosts = allowAnyHosts
-//    }
-//}
-//
-//task deployToRemote {
-//    doLast {
-//        ssh.run {
-//            session(remotes.repo) {
-//                put from: "${buildDir}/repository", into: '/var/maven'
-//            }
-//        }
-//    }
-//}

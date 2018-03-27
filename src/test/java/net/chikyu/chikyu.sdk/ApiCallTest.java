@@ -106,4 +106,39 @@ public class ApiCallTest extends AbsApiTest {
         assertThat(resp.data.get("action"), is(equalTo("create")));
    }
 
+   @Ignore
+   @Test
+   public void セッション情報をStringに変換() throws Exception {
+       String tokenName = params.getProperty("login.execute.token_name");
+       String loginToken = params.getProperty("login.execute.login_token");
+       String loginSecretToken = params.getProperty("login.execute.login_secret_token");
+
+       Session session = Session.login(new SendTokenRequestModel()
+               .withTokenName(tokenName)
+               .withLoginToken(loginToken)
+               .withLoginSecretToken(loginSecretToken));
+
+       String json = session.toString();
+       session = Session.fromJson(json);
+
+       SecureResource resource = new SecureResource(session);
+
+       GenericApiRequest req = new GenericApiRequest();
+       Map<String, Object> data = new HashMap<>();
+       data.put("items_per_page", 10);
+       data.put("page_index", 1);
+       req.data = data;
+
+       GenericApiResponse res = resource.invoke("entity/prospects/list", req, GenericApiResponse.class);
+
+       List<Map<String, Object>> items = (List<Map<String, Object>>)res.data.get("list");
+
+       for (Map<String, Object> item : items) {
+           System.out.println(item.get("__display_name"));
+       }
+
+       assertThat(items.size(), is(equalTo(10)));
+
+       session.logout();
+   }
 }

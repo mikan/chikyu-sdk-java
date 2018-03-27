@@ -1,7 +1,7 @@
 package net.chikyu.chikyu.sdk.helper;
 
 import com.amazonaws.auth.BasicSessionCredentials;
-import net.chikyu.chikyu.sdk.config.Config;
+import net.chikyu.chikyu.sdk.config.ApiConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 
@@ -56,7 +56,7 @@ public class ApiRequestSigner {
 
         Map<String, String> headers = new LinkedHashMap<>();
         headers.put("content-type", "application/json");
-        headers.put("host", Config.getHost());
+        headers.put("host", ApiConfig.getHost());
         headers.put("x-amz-date", timeStamp);
         headers.put("x-amz-security-token", this.credentials.getSessionToken());
         headers.put("x-api-key", this.apiKey);
@@ -76,7 +76,7 @@ public class ApiRequestSigner {
         }
 
         try {
-            String s2 = Config.getProtocol() + "://" + Config.getHost() + path;
+            String s2 = ApiConfig.getProtocol() + "://" + ApiConfig.getHost() + path;
             post.setURI(new URI(s2));
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);

@@ -8,9 +8,11 @@ import com.amazonaws.services.securitytoken.AWSSecurityTokenService;
 import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder;
 import com.amazonaws.services.securitytoken.model.AssumeRoleWithWebIdentityRequest;
 import com.amazonaws.services.securitytoken.model.AssumeRoleWithWebIdentityResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.chikyu.chikyu.sdk.OpenResource;
 import net.chikyu.chikyu.sdk.SecureResource;
-import net.chikyu.chikyu.sdk.config.Config;
+import net.chikyu.chikyu.sdk.config.ApiConfig;
 import net.chikyu.chikyu.sdk.exception.ApiCallException;
 import net.chikyu.chikyu.sdk.model.ApiDataResponse;
 import net.chikyu.chikyu.sdk.model.ApiRequest;
@@ -22,6 +24,7 @@ import net.chikyu.chikyu.sdk.model.session.LoginResponseModel;
 import net.chikyu.chikyu.sdk.model.session.token.SendTokenRequestModel;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class Session {
     private SessionData sessionData;
@@ -62,6 +65,34 @@ public class Session {
         return !res.hasError;
     }
 
+    public Map<String, String> toMap() {
+        return this.data().toMap();
+    }
+
+    public static Session fromMap(Map<String, String> map) {
+        return new Session(SessionData.fromMap(map));
+    }
+
+    public static Session fromJson(String json) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            Map<String, String> map = mapper.readValue(json, Map.class);
+            return fromMap(map);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
+    public String toString() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this.toMap());
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     public SessionData data() {
         return sessionData;
     }
@@ -81,13 +112,13 @@ public class Session {
 
         AWSSecurityTokenService stsService = AWSSecurityTokenServiceClientBuilder.standard()
                 .withCredentials(new DummyProvider())
-                .withRegion(Config.getAwsRegionName())
+                .withRegion(ApiConfig.getAwsRegionName())
                 .build();
 
         AssumeRoleWithWebIdentityRequest req = new AssumeRoleWithWebIdentityRequest()
-                .withRoleArn(Config.getAwsIamRoleId())
+                .withRoleArn(ApiConfig.getAwsIamRoleId())
                 .withWebIdentityToken(model.cognitoToken)
-                .withRoleSessionName(Config.getAwsServiceName());
+                .withRoleSessionName(ApiConfig.getAwsServiceName());
 
         AssumeRoleWithWebIdentityResult stsResult = stsService.assumeRoleWithWebIdentity(req);
 

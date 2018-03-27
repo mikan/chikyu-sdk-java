@@ -1,7 +1,7 @@
 package net.chikyu.chikyu.sdk;
 
 import net.chikyu.chikyu.sdk.auth.Session;
-import net.chikyu.chikyu.sdk.config.Config;
+import net.chikyu.chikyu.sdk.config.ApiConfig;
 import net.chikyu.chikyu.sdk.exception.ApiCallException;
 import net.chikyu.chikyu.sdk.helper.ApiRequestSigner;
 import net.chikyu.chikyu.sdk.helper.RequestHelper;
@@ -21,7 +21,7 @@ public class SecureResource extends ApiResource {
     @Override
     public <T>T invoke(String path, ApiRequest req, Class<T> cls) throws ApiCallException, IOException {
         req.withSessionId(this.session.data().getSessionId());
-        if (Config.getMode().equals("local")) {
+        if (ApiConfig.getMode().equals("local")) {
             req.withIdentityId(this.session.data().getIdentityId());
         }
 
