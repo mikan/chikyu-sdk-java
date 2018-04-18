@@ -21,7 +21,7 @@ public class SecureResource extends ApiResource {
     @Override
     public <T>T invoke(String path, ApiRequest req, Class<T> cls) throws ApiCallException, IOException {
         req.withSessionId(this.session.data().getSessionId());
-        if (ApiConfig.getMode().equals("local")) {
+        if (ApiConfig.getMode().equals("local") || ApiConfig.getMode().equals("docker")) {
             req.withIdentityId(this.session.data().getIdentityId());
         }
 
