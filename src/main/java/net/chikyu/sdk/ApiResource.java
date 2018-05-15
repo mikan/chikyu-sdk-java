@@ -28,8 +28,11 @@ public abstract class ApiResource {
         logger().log(Level.FINE, respJson);
 
         T model = ApiModel.fromJson(respJson, cls);
-        if (model instanceof ApiResponse && ((ApiResponse)model).hasError) {
-            throw new ApiCallException(((ApiResponse)model).message);
+        if (model instanceof ApiResponse) {
+            ApiResponse r = ((ApiResponse)model);
+            if (r.hasError == null || r.hasError) {
+                throw new ApiCallException(r.message);
+            }
         }
         return model;
     }
