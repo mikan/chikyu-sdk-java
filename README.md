@@ -1,4 +1,4 @@
-# chikyu-java-sdk
+# chikyu-sdk-java
 ## 概要
 **内容は全てリリース前のものであり、予告なく変更となる場合があります**
 
@@ -89,7 +89,7 @@ class Sample {
 
 ## 詳細
 ### class1(APIキーのみで呼び出し可能)
-#### APIトークンを生成する
+#### APIキーを生成する
 ```TokenSample.java
 import net.chikyu.sdk.SecureResource;
 import net.chikyu.sdk.auth.Session;
@@ -108,7 +108,7 @@ class TokenSample {
         //2018/05/15現在、まだ本番環境が存在しないため、接続先の指定が必要。
         ApiConfig.setMode("devdc");
 
-        //後述のclass2 apiを利用し、予めトークンを生成しておく。
+        //後述のclass2 apiを利用し、予めログイン用の「認証トークン」(＊ここで言う「APIキー」とは別)を生成しておく。
         Session session = Session.login(new SendTokenRequestModel()
                                                 .withTokenName("token_name")
                                                 .withLoginToken("login_token")
@@ -178,8 +178,8 @@ class InvokePublicSample {
 }
 ```
 
-### class2(APIトークンからセッションを生成)
-#### APIトークンを生成する
+### class2(認証トークンからセッションを生成)
+#### 認証トークンを生成する
 ```CreateTokenSample.java
 import net.chikyu.sdk.auth.Token;
 import net.chikyu.sdk.config.ApiConfig;
