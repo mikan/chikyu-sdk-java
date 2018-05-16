@@ -7,6 +7,7 @@ public class ApiConfig {
     private static final String AWS_REGION_NAME = "ap-northeast-1";
     private static final String AWS_SERVICE_NAME = "execute-api";
     private static final String AWS_IAM_ROLE_ID = "arn:aws:iam::171608821407:role/Cognito_Chikyu_Normal_Id_PoolAuth_Role";
+    private static final String AWS_IAM_DEV_ROLE_ID = "arn:aws:iam::527083274078:role/Cognito_ChikyuDevLocalAuth_Role";
     private static final String PATH_PREFIX = "api/v2";
 
     private static Map<String, String> ENV_NAMES;
@@ -24,7 +25,11 @@ public class ApiConfig {
     }
 
     public static String getAwsIamRoleId() {
-        return AWS_IAM_ROLE_ID;
+        if (mode.equals("local") || mode.equals("docker")) {
+            return AWS_IAM_DEV_ROLE_ID;
+        } else {
+            return AWS_IAM_ROLE_ID;
+        }
     }
 
     public static String getHost() {
