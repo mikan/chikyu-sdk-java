@@ -18,7 +18,7 @@ Mavenの公式レポジトリには登録していないため、レポジトリ
 
 ```build.gradle
 group 'com.examle'
-version '0.0.2-SNAPSHOT'
+version '0.0.1-SNAPSHOT'
 
 apply plugin: 'java'
 
@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
-    compile group:'net.chikyu.sdk',  name: 'chikyu-sdk', version: '0.0.1-SNAPSHOT'
+    compile group:'net.chikyu.sdk',  name: 'chikyu-sdk', version: '0.0.2-SNAPSHOT'
 }
 ```
 
