@@ -118,6 +118,7 @@ public class Session {
         AssumeRoleWithWebIdentityRequest req = new AssumeRoleWithWebIdentityRequest()
                 .withRoleArn(ApiConfig.getAwsIamRoleId())
                 .withWebIdentityToken(model.cognitoToken)
+                .withDurationSeconds(43200)
                 .withRoleSessionName(ApiConfig.getAwsServiceName());
 
         AssumeRoleWithWebIdentityResult stsResult = stsService.assumeRoleWithWebIdentity(req);
