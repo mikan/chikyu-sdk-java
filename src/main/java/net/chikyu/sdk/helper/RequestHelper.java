@@ -12,7 +12,12 @@ public class RequestHelper {
     }
 
     public static String buildApiPathWithEnvName(String apiClass, String path) {
-        return "/" + ApiConfig.getEnvName() + "/" + ApiConfig.getPathPrefix() + buildApiPath(apiClass, path);
+        String envName = ApiConfig.getEnvName();
+        if (envName.equals("")) {
+            return "/" + ApiConfig.getPathPrefix() + buildApiPath(apiClass, path);
+        } else {
+            return "/" + ApiConfig.getEnvName() + "/" + ApiConfig.getPathPrefix() + buildApiPath(apiClass, path);
+        }
     }
 
     public static String buildApiPath(String apiClass, String path) {

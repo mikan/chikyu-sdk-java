@@ -85,6 +85,6 @@ public class ApiConfig {
         HOSTS.put("dev01",    "gateway.chikyu.mobi");
         HOSTS.put("dev02",    "gateway.chikyu.mobi");
         HOSTS.put("hotfix01", "gateway.chikyu.mobi");
-        HOSTS.put("prod",     "api.chikyu.net");
+        HOSTS.put("prod",     "endpoint.chikyu.net");
     }
 }
