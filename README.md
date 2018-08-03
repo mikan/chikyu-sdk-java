@@ -35,7 +35,7 @@ dependencies {
 ```
 
 ## SDKを利用する
-### テスト段階でのサンプルコード
+### サンプルコード
 ```Sample.java
 import net.chikyu.sdk.config.ApiConfig;
 import net.chikyu.sdk.auth.Session;
