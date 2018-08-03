@@ -1,7 +1,5 @@
 # chikyu-sdk-java
 ## 概要
-**内容は全てリリース前のものであり、予告なく変更となる場合があります**
-
 ちきゅうのWeb APIをJavaから利用するためのライブラリです。
 
 SDKの開発にはJava 1.8を利用しています。
@@ -32,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    compile group:'net.chikyu.sdk',  name: 'chikyu-sdk', version: '0.0.2-SNAPSHOT'
+    compile group:'net.chikyu.sdk',  name: 'chikyu-sdk', version: '1.0.0'
 }
 ```
 
@@ -53,9 +51,6 @@ import java.util.Map;
 class Sample {
 
     public static void main(String[] args) throws Exception {
-        //2018/05/14現在、まだ本番環境が未構築であるため、こちらのテスト用の環境名を指定して下さい。
-        ApiConfig.setMode("devdc");
-
         //セッションを生成する
         Session session = Session.login(new SendTokenRequestModel()
                 .withTokenName("tokenName")
@@ -105,9 +100,6 @@ import java.util.Map;
 class TokenSample {
 
     public static void main(String[] args) throws Exception {
-        //2018/05/15現在、まだ本番環境が存在しないため、接続先の指定が必要。
-        ApiConfig.setMode("devdc");
-
         //後述のclass2 apiを利用し、予めログイン用の「認証トークン」(＊ここで言う「APIキー」とは別)を生成しておく。
         Session session = Session.login(new SendTokenRequestModel()
                                                 .withTokenName("token_name")
@@ -150,9 +142,6 @@ import java.util.Map;
 class InvokePublicSample {
 
     public static void main(String[] args) throws Exception{
-        //2018/05/15現在、まだ本番環境が存在しないため、接続先の指定が必要。
-        ApiConfig.setMode("devdc");
-
         PublicResource invoker = new PublicResource("api_key", "auth_key");
 
         //MapからJSONに変換を行う汎用クラスを使い、リクエストを生成する
@@ -189,9 +178,6 @@ import net.chikyu.sdk.model.session.token.TokenResponseModel;
 class CreateTokenSample {
 
     public static void main(String[] args) throws Exception{
-        //2018/05/15現在、まだ本番環境が存在しないため、接続先の指定が必要。
-        ApiConfig.setMode("devdc");
-
         TokenRequestModel req = new TokenRequestModel();
         req.tokenName = "token_name";
         req.email = "email";
@@ -215,9 +201,6 @@ import net.chikyu.sdk.model.session.token.SendTokenRequestModel;
 
 class CreateSessionSample {
     public static void main(String[] args) throws Exception {
-        //2018/05/15現在、まだ本番環境が存在しないため、接続先の指定が必要。
-        ApiConfig.setMode("devdc");
-
         Session session = Session.login(new SendTokenRequestModel()
                 .withTokenName("token_name")
                 .withLoginToken("login_token")
@@ -258,9 +241,6 @@ import java.util.Map;
 class InvokeSecureSample {
 
     public static void main(String[] args) throws Exception {
-        //2018/05/15現在、まだ本番環境が存在しないため、接続先の指定が必要。
-        ApiConfig.setMode("devdc");
-
         Session session = Session.login(new SendTokenRequestModel()
                 .withTokenName("20170206")
                 .withLoginToken("6042e10801c44e89f9532d1a411349ca6402d0319c42a3029ab27fb05e93ae2468571507a03c503fe181d07f4b15ba54539a9fb71404ac6afd4bde49d42e01d4")

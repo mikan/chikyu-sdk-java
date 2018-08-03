@@ -1,5 +1,5 @@
 group 'net.chikyu.sdk'
-version '0.0.2-SNAPSHOT'
+version '1.0.0'
 
 apply plugin: 'java'
 apply plugin: 'maven'
