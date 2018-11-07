@@ -25,7 +25,7 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
     maven {
-        url 'https://s3-ap-northeast-1.amazonaws.com/chikyu-cors/maven'
+        url 'https://distribution.chikyu.net/maven'
     }
 }
 
