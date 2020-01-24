@@ -9,6 +9,7 @@ public class ApiConfig {
     private static final String AWS_IAM_ROLE_ID = "arn:aws:iam::171608821407:role/Cognito_Chikyu_Normal_Id_PoolAuth_Role";
     private static final String AWS_IAM_PROD_ROLE_ID = "arn:aws:iam::171608821407:role/Cognito_chikyu_PROD_idpoolAuth_Role";
     private static final String AWS_IAM_DEV_ROLE_ID = "arn:aws:iam::527083274078:role/Cognito_ChikyuDevLocalAuth_Role";
+    private static final String AWS_IAM_DEV2_ROLE_ID = "arn:aws:iam::527083274078:role/Cognito_Chikyu_Normal_Id_Pool_devAuth_Role";
     private static final String PATH_PREFIX = "api/v2";
 
     private static Map<String, String> ENV_NAMES;
@@ -30,6 +31,8 @@ public class ApiConfig {
             return AWS_IAM_PROD_ROLE_ID;
         } else if (mode.equals("local") || mode.equals("docker")) {
             return AWS_IAM_DEV_ROLE_ID;
+        }else if (mode.equals("dev03")){
+            return AWS_IAM_DEV2_ROLE_ID;
         } else {
             return AWS_IAM_ROLE_ID;
         }
@@ -66,6 +69,7 @@ public class ApiConfig {
         ENV_NAMES.put("devdc",    "dev");
         ENV_NAMES.put("dev01",    "dev01");
         ENV_NAMES.put("dev02",    "dev02");
+        ENV_NAMES.put("dev03",    "dev03");
         ENV_NAMES.put("hotfix01", "hotfix01");
         ENV_NAMES.put("prod",     "");
 
@@ -75,6 +79,7 @@ public class ApiConfig {
         PROTOCOLS.put("devdc",    "https");
         PROTOCOLS.put("dev01",    "https");
         PROTOCOLS.put("dev02",    "https");
+        PROTOCOLS.put("dev03",    "https");
         PROTOCOLS.put("hotfix01", "https");
         PROTOCOLS.put("prod",     "https");
 
@@ -84,6 +89,7 @@ public class ApiConfig {
         HOSTS.put("devdc",    "gateway.chikyu.mobi");
         HOSTS.put("dev01",    "gateway.chikyu.mobi");
         HOSTS.put("dev02",    "gateway.chikyu.mobi");
+        HOSTS.put("dev03",    "gateway-dev.chikyu.mobi");
         HOSTS.put("hotfix01", "gateway.chikyu.mobi");
         HOSTS.put("prod",     "endpoint.chikyu.net");
     }
