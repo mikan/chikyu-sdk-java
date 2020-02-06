@@ -66,7 +66,7 @@ class Sample {
         //＊Jacksonの機能を利用し、EntityからJSONへの変換を行うことも可能
         Map<String, Object> data = new HashMap<>();
         data.put("items_per_page", 10);
-        data.put("page_index", 1);
+        data.put("page_index", 0);
 
         //Mapでレスポンスを受け取る汎用クラスを使い、レスポンスを受け取る
         //＊Jacksonの機能を利用し、EntityからJSONへの変換を行うことも可能
